@@ -1,14 +1,27 @@
-﻿$voornaam = read-host "Geef de voornaam van de leerkracht (zonder accenten)"
+﻿# dit script maakt één leerkracht aan in de AD, maakt zijn mappen (homedir en profiel) aan met de nodige rechten en geeft de mogelijkheid
+# een mail te versturen als de account aangemaakt is.
+
+# aanmaken van de Office365 account gebeurt hier niet mee, daar zorgt Azure AD Sync voor.
+
+<# gewenste uitbreidingen: 
+    - afhandeling als account al bestaat (rechten aanpassen op mappen)
+    - foutafhandeling
+    - uitlezen uit database (delta verwerken ipv manuele input)
+    - integratie in webinterface
+    - aanmaken smartschool account voor leerkracht
+#>
+
+#input van de gebruiker
+$voornaam = read-host "Geef de voornaam van de leerkracht (zonder accenten)"
 $achternaam = read-host "Geef de achternaam van de leerkracht (zonder accenten)"
-$gebruikersnaam = read-host "Geef de gebruikersnaam van de leerkracht (zonder accenten)"
+$gebruikersnaam = read-host "Geef de gebruikersnaam van de leerkracht (zonder accenten, in de vorm voornaam.achternaam)"
 $wachtwoord = read-host "Geef een wachtwoord voor de leerkracht"
 $server = read-host "Geef de server voor de homedir en profiel"
-$mailprive = read-host "Geef het prive mailadres van de leerkracht"
+$mailprive = read-host "Geef het prive mailadres van de leerkracht (om mail te versturen)"
 
 $SecurePassword=ConvertTo-SecureString $wachtwoord –asplaintext –force
 
 # gebruiker aanmaken in de AD
-
 if (Get-ADUser -F {SamAccountName -eq $gebruikersnaam})
 	{
 		 #geef een waarschuwing als de gebruiker al bestaat
@@ -22,7 +35,7 @@ if (Get-ADUser -F {SamAccountName -eq $gebruikersnaam})
             -Path "OU=OULeerkrachten,OU=OUAzureAD,DC=kaso,DC=lok" -ProfilePath \\$server\profiel\$gebruikersnaam `
             -SamAccountName $gebruikersnaam -Surname $achternaam -UserPrincipalName $gebruikersnaam@mosa-rt.be
 
-        # gebruiker toevoegen aan klasgroep en de groep "Leerlingen"
+        # gebruiker toevoegen aan de groep "Leerkrachten"
         Add-ADGroupMember -Identity Leerkrachten -Members $gebruikersnaam
         
         # homedir maken

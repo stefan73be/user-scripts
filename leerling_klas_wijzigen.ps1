@@ -8,7 +8,7 @@
             Homedirectory verplaatsen naar andere lokatie
             Profielmap verplaatsen naar andere lokatie
 
-Parameters nodig: scriptnaam.ps1 gebruikersnaam oudeklas nieuweklas
+Parameters nodig: worden ingelezen via de prompt
 
 #>
 

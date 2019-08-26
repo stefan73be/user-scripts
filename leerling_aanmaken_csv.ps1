@@ -1,21 +1,38 @@
-﻿# script om leerlingaccounts in de AD aan te maken, in bulk. 
-# Account met instellingen, home-drive en profielmap worden aangemaakt. Ook de gebruikersnaam wordt aangemaakt (met verwijdering van speciale tekens)
-# leerlingen worden in de juiste klasgroep gezet en in de juiste OU
-# leerlingen csv moet komma-gescheiden zijn en volgende velden bevatten: voornaam, achternaam, geboortedatum (in formaat DD-MM-JJJJ), wachtwoord, opslagserver en klas (met belangstellingsgebied)
+﻿<# script om leerlingaccounts in de AD aan te maken, in bulk. 
+Account met instellingen, home-drive en profielmap worden aangemaakt. Ook de gebruikersnaam wordt aangemaakt (met verwijdering van speciale tekens)
+Leerlingen worden in de juiste klasgroep gezet en in de juiste OU
+Leerlingen.csv moet 
+    - komma-gescheiden zijn
+    - volgende velden (en koppen) bevatten: voornaam, 
+                                            achternaam, 
+                                            geboortedatum (in formaat DD-MM-JJJJ), 
+                                            wachtwoord, 
+                                            opslagserver en 
+                                            klas (met belangstellingsgebied)
+#>
+<#
+Gewenste uitbreidingen:
+    - uitlezen uit een database (Smartschool, Informat) en enkel de nieuwe leerlingen en wijzigingen verwerken
+    - webinterface 
+    - spaties verwijderen uit namen
+    - foutafhandeling bij ontbrekende gegevens (geboortedatum bijvoorbeeld)
+#>
 
+#verwijderen van diakritische tekens uit de naam en voornaam
 function VerwijderAccenten
 {
     PARAM ([string]$String)
     [Text.Encoding]::ASCII.GetString([Text.Encoding]::GetEncoding("Cyrillic").GetBytes($String))
 }
 
-# verbinding maken met Office365 om de mailbox aan te maken
+# verbinding maken met Office365 om de mailbox aan te maken (gebeurt via Azure AD Sync, dus niet nodig in de bovenbouw)
 # connect-msolservice
 
 $ADgebruikers = Import-csv leerlingen.csv -encoding UTF7
 
 foreach ($gebruiker in $ADgebruikers) {
 
+#gebruikers lijn per lijn uitlezen uit de csv
 #$gebruikersnaam = $gebruiker.gebruikersnaam
 $wachtwoord = $gebruiker.wachtwoord
 $server = $gebruiker.server

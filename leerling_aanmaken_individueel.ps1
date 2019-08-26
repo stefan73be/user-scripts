@@ -1,4 +1,4 @@
-﻿########### dit script is nog niet klaar #####
+﻿# aanmaken van een individuele leerling
 
 $voornaam = read-host "Geef de voornaam van de leerling (zonder accenten)"
 $achternaam = read-host "Geef de achternaam van de leerling (zonder accenten)"
@@ -95,7 +95,7 @@ if (Get-ADUser -F {SamAccountName -eq $gebruikersnaam})
         write-host "Gebruikersnaam computer: $gebruikersnaam"
         write-host "Gebruikersnaam mailbox : $gebruikersnaam@leerling.mosa-rt.be"
         write-host "Wachtwoord voor computer en mailbox: $wachtwoord"
-        write-host "Mailbox is binnen een uur actief en bereikbaar via http://mail.mosa-rt.be"
-        write-host Separator
-        write-host "Denk eraan dat de licentie voor office nog moet toegewezen worden zodra de mailbox klaar is (ongeveer een uur)"
+        write-host "<br>Mailbox is binnen een uur actief en bereikbaar via http://mail.mosa-rt.be"
+        write-host 
+        write-host "<br>Denk eraan dat de licentie voor office nog moet toegewezen worden zodra de mailbox klaar is (ongeveer een uur)"
         

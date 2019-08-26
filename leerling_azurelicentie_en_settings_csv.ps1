@@ -1,5 +1,5 @@
 ﻿# script om licenties aan Azure users toe te wijzen, op basis van CSV
-# ook worden land en taal voor Azure juist gezet (en onedrive geinitialiseerd)
+# ook worden land en taal voor Azure juist gezet
 
 function VerwijderAccenten
 {
@@ -7,7 +7,7 @@ function VerwijderAccenten
     [Text.Encoding]::ASCII.GetString([Text.Encoding]::GetEncoding("Cyrillic").GetBytes($String))
 }
 
-# verbinding maken met Office365 om de mailbox aan te maken
+# verbinding maken met Office365 om instellingen te wijzigen
 connect-msolservice
 
 $ADgebruikers = Import-csv leerlingen.csv -encoding UTF7
