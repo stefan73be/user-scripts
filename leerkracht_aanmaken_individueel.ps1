@@ -67,7 +67,7 @@ if (Get-ADUser -F {SamAccountName -eq $gebruikersnaam})
         send-mailmessage -smtpserver uit.telenet.be `
                          -from "stefan.cox@mosa-rt.be" `
                          -to "$mailprive" `
-                         -cc "stefan.cox@mosa-rt.be","marc.vleeschouwers@mosa-rt.be"
+                         -cc "stefan.cox@mosa-rt.be","marc.vleeschouwers@mosa-rt.be" `
                          -subject "$voornaam $achternaam - login-gegevens voor mailbox en computers campus" `
                          -body "Dag $voornaam<br><br> Hieronder vind je de gegevens om in te loggen`
                                 <br><br>Gebruikersnaam: $gebruikersnaam`
