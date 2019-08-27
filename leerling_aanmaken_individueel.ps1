@@ -37,7 +37,7 @@ if (Get-ADUser -F {SamAccountName -eq $gebruikersnaam})
         else{
 		     #geef een waarschuwing als de klas niet bestaat
 		     Write-Warning "De klasgroep $klas bestaat nog niet in de Active Directory, ze wordt nu toegevoegd."
-             New-ADGroup -Name $klas -GroupCategory Security -GroupScope Global -Path "OU=OUGroepen,OU=OUAzureAD,DC=kaso,DC=lok"
+             New-ADGroup -Name $klas -GroupCategory Security -GroupScope Global -Path "OU=OUGroepen,OU=OUAzureAD,DC=domein,DC=lok"
    	    }
 	    if (Get-ADOrganizationalUnit -F {Name -eq $klas})
 	    {
@@ -46,7 +46,7 @@ if (Get-ADUser -F {SamAccountName -eq $gebruikersnaam})
         else{
 		     #geef een waarschuwing als de OU niet bestaat
 		     Write-Warning "De OU $klas bestaat nog niet in de Active Directory, ze wordt nu toegevoegd."
-             New-ADOrganizationalUnit -Name $klas -Path "OU=$klasjaarwoord,OU=OULeerlingen,OU=OUAzureAD,DC=kaso,DC=lok"
+             New-ADOrganizationalUnit -Name $klas -Path "OU=$klasjaarwoord,OU=OULeerlingen,OU=OUAzureAD,DC=domein,DC=lok"
 	    }
 
 
@@ -54,10 +54,10 @@ if (Get-ADUser -F {SamAccountName -eq $gebruikersnaam})
         
         # gebruiker aanmaken in de AD
         New-ADUser -Name $gebruikersnaam -AccountPassword $securepassword -ChangePasswordAtLogon 0 -Department $klas `
-            -DisplayName "$voornaam $achternaam" -EmailAddress $gebruikersnaam@leerling.mosa-rt.be -Enabled 1 -GivenName $voornaamzuiver `
+            -DisplayName "$voornaam $achternaam" -EmailAddress $gebruikersnaam@leerling.maildomein.be -Enabled 1 -GivenName $voornaamzuiver `
             -HomeDirectory \\$server\homedirs\$klas\$gebruikersnaam -HomeDrive U: -PasswordNeverExpires 1 `
-            -Path "OU=$klas,OU=$klasjaarwoord,OU=OULeerlingen,OU=OUAzureAD,DC=kaso,DC=lok" -ProfilePath \\$server\profiel\$klas\$gebruikersnaam `
-            -SamAccountName $gebruikersnaam -Surname $achternaam -UserPrincipalName $gebruikersnaam@leerling.mosa-rt.be
+            -Path "OU=$klas,OU=$klasjaarwoord,OU=OULeerlingen,OU=OUAzureAD,DC=domein,DC=lok" -ProfilePath \\$server\profiel\$klas\$gebruikersnaam `
+            -SamAccountName $gebruikersnaam -Surname $achternaam -UserPrincipalName $gebruikersnaam@leerling.maildomein.be
 
         # gebruiker toevoegen aan klasgroep en de groep "Leerlingen"
         Add-ADGroupMember -Identity $klas -Members $gebruikersnaam
@@ -69,7 +69,7 @@ if (Get-ADUser -F {SamAccountName -eq $gebruikersnaam})
             New-Item \\$server\homedirs\$klas\$gebruikersnaam -type directory
             # rechten op homedir instellen
             $acl = get-acl \\$server\homedirs\$klas\$gebruikersnaam
-            $accessrule = new-object system.Security.AccessControl.FileSystemAccessRule("kaso\$gebruikersnaam","Modify","ContainerInherit, ObjectInherit","None","Allow")
+            $accessrule = new-object system.Security.AccessControl.FileSystemAccessRule("domein\$gebruikersnaam","Modify","ContainerInherit, ObjectInherit","None","Allow")
             $acl.SetAccessRule($AccessRule)
             $acl | set-acl \\$server\homedirs\$klas\$gebruikersnaam\
             }
@@ -81,7 +81,7 @@ if (Get-ADUser -F {SamAccountName -eq $gebruikersnaam})
             New-Item \\$server\profiel\$klas\$gebruikersnaam.V6 -type directory
             # rechten op profielmap instellen
             $acl = get-acl \\$server\profiel\$klas\$gebruikersnaam.V6
-            $accessrule = new-object system.Security.AccessControl.FileSystemAccessRule("kaso\$gebruikersnaam","FullControl","ContainerInherit, ObjectInherit","None","Allow")
+            $accessrule = new-object system.Security.AccessControl.FileSystemAccessRule("domein\$gebruikersnaam","FullControl","ContainerInherit, ObjectInherit","None","Allow")
             $acl.SetAccessRule($AccessRule)
             $acl | set-acl \\$server\profiel\$klas\$gebruikersnaam.V6\
             }
@@ -93,9 +93,9 @@ if (Get-ADUser -F {SamAccountName -eq $gebruikersnaam})
         write-host "De nieuwe gebruiker is aangemaakt"
         write-host "---------------------------------"
         write-host "Gebruikersnaam computer: $gebruikersnaam"
-        write-host "Gebruikersnaam mailbox : $gebruikersnaam@leerling.mosa-rt.be"
+        write-host "Gebruikersnaam mailbox : $gebruikersnaam@leerling.maildomein.be"
         write-host "Wachtwoord voor computer en mailbox: $wachtwoord"
-        write-host "<br>Mailbox is binnen een uur actief en bereikbaar via http://mail.mosa-rt.be"
+        write-host "<br>Mailbox is binnen een uur actief en bereikbaar via http://mail.maildomein.be"
         write-host 
         write-host "<br>Denk eraan dat de licentie voor office nog moet toegewezen worden zodra de mailbox klaar is (ongeveer een uur)"
         
