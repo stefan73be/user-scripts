@@ -30,8 +30,8 @@ foreach ($gebruiker in $ADgebruikers) {
 
     # $SecurePassword=ConvertTo-SecureString $gebruiker.wachtwoord –asplaintext –force
 
-    Set-Msoluser `             –userprincipalname "$gebruikersnaam@leerling.mosa-rt.be" `             -passwordneverexpires 1 `             -usagelocation be `
+    Set-Msoluser `             –userprincipalname "$gebruikersnaam@leerling.maildomein.be" `             -passwordneverexpires 1 `             -usagelocation be `
 
-    Set-MsolUserLicense -UserPrincipalName "$gebruikersnaam@leerling.mosa-rt.be" -AddLicenses kasomk:STANDARDWOFFPACK_IW_STUDENT
+    Set-MsolUserLicense -UserPrincipalName "$gebruikersnaam@leerling.maildomein.be" -AddLicenses NaamVanDeLicentie
 
 }

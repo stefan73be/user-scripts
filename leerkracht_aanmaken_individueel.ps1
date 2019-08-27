@@ -30,10 +30,10 @@ if (Get-ADUser -F {SamAccountName -eq $gebruikersnaam})
 	else
         {
         New-ADUser -Name $gebruikersnaam -AccountPassword $securepassword -ChangePasswordAtLogon 0 -Department Leerkracht `
-            -DisplayName "$voornaam $achternaam" -EmailAddress $gebruikersnaam@mosa-rt.be -Enabled 1 -GivenName $voornaam `
+            -DisplayName "$voornaam $achternaam" -EmailAddress $gebruikersnaam@maildomein.be -Enabled 1 -GivenName $voornaam `
             -HomeDirectory \\$server\homedirs\$gebruikersnaam -HomeDrive U: -PasswordNeverExpires 1 `
-            -Path "OU=OULeerkrachten,OU=OUAzureAD,DC=kaso,DC=lok" -ProfilePath \\$server\profiel\$gebruikersnaam `
-            -SamAccountName $gebruikersnaam -Surname $achternaam -UserPrincipalName $gebruikersnaam@mosa-rt.be
+            -Path "OU=OULeerkrachten,OU=OUAzureAD,DC=domein,DC=lok" -ProfilePath \\$server\profiel\$gebruikersnaam `
+            -SamAccountName $gebruikersnaam -Surname $achternaam -UserPrincipalName $gebruikersnaam@maildomein.be
 
         # gebruiker toevoegen aan de groep "Leerkrachten"
         Add-ADGroupMember -Identity Leerkrachten -Members $gebruikersnaam
@@ -44,7 +44,7 @@ if (Get-ADUser -F {SamAccountName -eq $gebruikersnaam})
             New-Item \\$server\homedirs\$gebruikersnaam -type directory
             # rechten op homedir instellen
             $acl = get-acl \\$server\homedirs\$gebruikersnaam
-            $accessrule = new-object system.Security.AccessControl.FileSystemAccessRule("kaso\$gebruikersnaam","Modify","ContainerInherit, ObjectInherit","None","Allow")
+            $accessrule = new-object system.Security.AccessControl.FileSystemAccessRule("domein\$gebruikersnaam","Modify","ContainerInherit, ObjectInherit","None","Allow")
             $acl.SetAccessRule($AccessRule)
             $acl | set-acl \\$server\homedirs\$gebruikersnaam\
             }
@@ -56,7 +56,7 @@ if (Get-ADUser -F {SamAccountName -eq $gebruikersnaam})
             New-Item \\$server\profiel\$gebruikersnaam.V6 -type directory
             # rechten op profielmap instellen
             $acl = get-acl \\$server\profiel\$gebruikersnaam.V6
-            $accessrule = new-object system.Security.AccessControl.FileSystemAccessRule("kaso\$gebruikersnaam","FullControl","ContainerInherit, ObjectInherit","None","Allow")
+            $accessrule = new-object system.Security.AccessControl.FileSystemAccessRule("domein\$gebruikersnaam","FullControl","ContainerInherit, ObjectInherit","None","Allow")
             $acl.SetAccessRule($AccessRule)
             $acl | set-acl \\$server\profiel\$gebruikersnaam.V6\
             }
@@ -65,9 +65,9 @@ if (Get-ADUser -F {SamAccountName -eq $gebruikersnaam})
         write-host "De nieuwe gebruiker is aangemaakt"
         write-host "---------------------------------"
         write-host "Gebruikersnaam computer: $gebruikersnaam"
-        write-host "Gebruikersnaam mailbox : $gebruikersnaam@mosa-rt.be"
+        write-host "Gebruikersnaam mailbox : $gebruikersnaam@maildomein.be"
         write-host "Wachtwoord voor computer en mailbox: $wachtwoord"
-        write-host "Mailbox is binnen een uur actief via http://mail.mosa-rt.be"
+        write-host "Mailbox is binnen een uur actief via http://URLMailbox"
         write-host " "
         write-host "Denk eraan dat de licentie voor office nog moet toegewezen worden zodra de mailbox klaar is (duurt ongeveer een uur)"
         
@@ -77,16 +77,16 @@ if (Get-ADUser -F {SamAccountName -eq $gebruikersnaam})
 
         if ($antwoord -eq "j")
         {
-        send-mailmessage -smtpserver uit.telenet.be `
-                         -from "stefan.cox@mosa-rt.be" `
+        send-mailmessage -smtpserver SMTPserver `
+                         -from "afzender@maildomein.be" `
                          -to "$mailprive" `
-                         -cc "stefan.cox@mosa-rt.be","marc.vleeschouwers@mosa-rt.be" `
+                         -cc "afzender@maildomein.be","ictco@maildomein.be" `
                          -subject "$voornaam $achternaam - login-gegevens voor mailbox en computers campus" `
                          -body "Dag $voornaam<br><br> Hieronder vind je de gegevens om in te loggen`
                                 <br><br>Gebruikersnaam: $gebruikersnaam`
                                 <br>Wachtwoord: $wachtwoord`
-                                <br>Mailadres: $gebruikersnaam@mosa-rt.be met hetzelfde wachtwoord`
-                                <br><br>Je mailbox zou binnen het uur actief moeten zijn en is bereikbaar via http://mail.mosa-rt.be`
+                                <br>Mailadres: $gebruikersnaam@maildomein.be met hetzelfde wachtwoord`
+                                <br><br>Je mailbox zou binnen het uur actief moeten zijn en is bereikbaar via http://URLmailbox`
                                 <br><br>Veel succes met je opdracht`
                                 <br><br>Met vriendelijke groeten`
                                 <br>ICT-dienst" `
