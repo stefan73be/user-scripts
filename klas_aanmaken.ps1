@@ -17,7 +17,7 @@ if ($klasjaar -match '^[0-9]+$') # als het een cijfer is
 # ---------------------------------------------------------------------------------------
 
 # groep aanmaken in de AD
-New-ADGroup -Name $klas -GroupCategory Security -GroupScope Global -Path "OU=OUGroepen,OU=OUAzureAD,DC=kaso,DC=lok"
+New-ADGroup -Name $klas -GroupCategory Security -GroupScope Global -Path "OU=OUGroepen,OU=OUAzureAD,DC=domein,DC=lok"
 
 #OU aanmaken voor de klas
-New-ADOrganizationalUnit -Name $klas -Path "OU=$klasjaarwoord,OU=OULeerlingen,OU=OUAzureAD,DC=kaso,DC=lok"
+New-ADOrganizationalUnit -Name $klas -Path "OU=$klasjaarwoord,OU=OULeerlingen,OU=OUAzureAD,DC=domein,DC=lok"

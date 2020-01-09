@@ -78,7 +78,7 @@ write "Huidige OU is       $oudeOU"
                 -ProfilePath \\$servernieuw\profiel\$nieuweklas\$gebruikersnaam `
                     
     # aanpassen van de OU
-    $nieuweOU = "OU=$nieuweklas,OU=$nieuweklasjaarwoord,OU=OULeerlingen,OU=OUAzureAD,DC=kaso,DC=lok"
+    $nieuweOU = "OU=$nieuweklas,OU=$nieuweklasjaarwoord,OU=OULeerlingen,OU=OUAzureAD,DC=domein,DC=lok"
     # write "$nieuweOU"
     Move-ADObject  -Identity $gebruiker.DistinguishedName -TargetPath $nieuweOU    
 
