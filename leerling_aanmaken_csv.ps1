@@ -28,7 +28,8 @@ function VerwijderAccenten
 # verbinding maken met Office365 om de mailbox aan te maken (gebeurt via Azure AD Sync, dus niet nodig in de bovenbouw)
 # connect-msolservice
 
-$ADgebruikers = Import-csv leerlingen.csv -encoding UTF7
+$csv = read-host "Geef de bestandsnaam met de leerlingen (inclusief de .csv extensie)"
+$ADgebruikers = Import-csv $csv -encoding UTF7
 
 foreach ($gebruiker in $ADgebruikers) {
 
